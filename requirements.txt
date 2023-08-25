@@ -1,0 +1,7 @@
+streamlit
+torch
+ultralytics
+setuptools
+os
+numpy
+open-cv python
