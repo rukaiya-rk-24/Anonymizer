@@ -6,7 +6,7 @@ import base64
 import shutil
 import torch
 
-car_plate_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+car_plate_model = torch.hub.load('ultralytics/yolov5', 'custom', path='car.pt')
 face_detect_model = torch.hub.load('ultralytics/yolov5', 'custom', path='face.pt')
 
 def process_image(image_path, use_case):
