@@ -25,6 +25,9 @@ def anonymize_license_plate(image):
     # Add your license plate anonymization logic here
     # Use your pre-trained model
     results = car_plate_model(image)
+    df = results.pandas().xyxy[0]
+    if df.empty:
+        return image
     x = int(results.pandas().xyxy[0]._get_value(0, 'xmin', takeable=False))
     y = int(results.pandas().xyxy[0]._get_value(0, 'ymin', takeable=False))
     x2 = int(results.pandas().xyxy[0]._get_value(0, 'xmax', takeable=False))
@@ -39,6 +42,9 @@ def anonymize_license_plate(image):
 
 def anonymize_facial_data(image):
     results = face_detect_model(image)
+    df = results.pandas().xyxy[0]
+    if df.empty:
+        return image
     x = int(results.pandas().xyxy[0]._get_value(0, 'xmin', takeable=False))
     y = int(results.pandas().xyxy[0]._get_value(0, 'ymin', takeable=False))
     x2 = int(results.pandas().xyxy[0]._get_value(0, 'xmax', takeable=False))
