@@ -70,37 +70,46 @@ def save_processed_files(files, use_case):
     return output_dir
 
 def main():
-    st.title('Image Anonymization Platform')
+def main():
+    st.markdown("<h1 style='text-align: center; color: blue;'>Image Anonymization Platform</h1>", unsafe_allow_html=True)
 
-    st.markdown("## Upload Dataset (Single or bulk image)")
-    uploaded_file = st.file_uploader("Choose a zip file or an individual image...", type=["zip", "jpg", "png"])
+    st.markdown("## Upload Dataset (Single or Bulk Image)")
+    st.markdown("<p style='text-align: center;'>Choose a zip file or an individual image...</p>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=["zip", "jpg", "png"])
 
-    use_case = st.selectbox('Choose Use Case:', ['License Plate Anonymization', 'Facial Data Anonymization'])
-    st.write(f"You have selected: {use_case}")
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        use_case = st.selectbox('Choose Use Case:', ['License Plate Anonymization', 'Facial Data Anonymization'])
 
-    if uploaded_file is not None:
-        temp_dir = "temp_folder"
-        os.makedirs(temp_dir, exist_ok=True)
-        files_to_process = []
+    if st.button('Load Data', key="load"):
+        if uploaded_file is not None:
+            temp_dir = "temp_folder"
+            os.makedirs(temp_dir, exist_ok=True)
+            files_to_process = []
 
-        if uploaded_file.name.endswith(".zip"):
-            with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
-                zip_ref.extractall(temp_dir)
-                for root, _, files in os.walk(temp_dir):
-                    for file_name in files:
-                        if file_name.endswith((".jpg", ".png")):
-                            files_to_process.append(os.path.join(root, file_name))
-        else:
-            temp_image_path = os.path.join(temp_dir, "temp_image.jpg")
-            with open(temp_image_path, "wb") as file:
-                file.write(uploaded_file.read())
-            files_to_process.append(temp_image_path)
+            if uploaded_file.name.endswith(".zip"):
+                with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
+                    zip_ref.extractall(temp_dir)
+                    for root, _, files in os.walk(temp_dir):
+                        for file_name in files:
+                            if file_name.endswith((".jpg", ".png")):
+                                files_to_process.append(os.path.join(root, file_name))
+            else:
+                temp_image_path = os.path.join(temp_dir, "temp_image.jpg")
+                with open(temp_image_path, "wb") as file:
+                    file.write(uploaded_file.read())
+                files_to_process.append(temp_image_path)
 
-        if st.button("Load Data"):
             processed_folder = save_processed_files(files_to_process, use_case)
+            
+            st.markdown("## Preview Processed Images:")
+            for processed_image_path in os.listdir(processed_folder):
+                st.image(os.path.join(processed_folder, processed_image_path), caption=processed_image_path, width=300)
+
             shutil.make_archive('processed_images', 'zip', processed_folder)
 
             # Provide a download link
+            st.markdown("<p style='text-align: center;'>Click below to download the processed images</p>", unsafe_allow_html=True)
             with open('processed_images.zip', 'rb') as file:
                 href = f'<a download="processed_images.zip" href="data:file/zip;base64,{base64.b64encode(file.read()).decode()}">Click here to download the processed images</a>'
                 st.markdown(href, unsafe_allow_html=True)
