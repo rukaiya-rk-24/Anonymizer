@@ -70,7 +70,6 @@ def save_processed_files(files, use_case):
     return output_dir
 
 def main():
-def main():
     st.markdown("<h1 style='text-align: center; color: blue;'>Image Anonymization Platform</h1>", unsafe_allow_html=True)
 
     st.markdown("## Upload Dataset (Single or Bulk Image)")
